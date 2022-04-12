@@ -123,11 +123,33 @@ function complexity(filePath)
 			builder.StartLine    = node.loc.start.line;
 
 			builders[builder.FunctionName] = builder;
-		}
+			builder.ParameterCount = node.params.length;
 
+			var max = 0;
+
+			transverseWithParents(node,function(node){
+				if(isDecision(node)){
+					builder.SimpleCyclomaticComplexity+=1;
+					if(decisionCount(node)>max){
+						max = decisionCounter(node);
+					}
+				}
+			});
+
+			builder.SimpleCyclomaticComplexity += 1;
+			builder.MaxConditions = max;
+			if(builder.MaxConditions > 1){
+				builder.MaxConditions++;
+			}
+		}
+		if(node.type === 'Literal'){
+			fileBuilder.String++;
+		}
 	});
 
 }
+
+
 
 // Helper function for counting children of node.
 function childrenLength(node)

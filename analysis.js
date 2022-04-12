@@ -149,6 +149,24 @@ function complexity(filePath)
 
 }
 
+function decisionCounter(node){
+	var max = 0;
+	ifStatement = false;
+
+	transverseWithParents(node, function(node){
+		if(node.type === 'IfStatement')
+			ifStatement = true;
+		if(node.type === 'LogicalExpression' && ((node.operator === '&&') || (node.operator === '||')))
+			max++;
+	});
+
+	if(max == 0 && ifStatement){
+		return 1;
+	}
+
+	return max;
+}
+
 
 
 // Helper function for counting children of node.
